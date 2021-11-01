@@ -1,0 +1,74 @@
+<body>
+  <h1>Music scale trainer</h1>
+  <h2></h2>
+  <p></p>
+</body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/webmidi"></script>
+<script>
+
+let notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+
+let header = document.querySelector("h2");
+let paragraph = document.querySelector("p");
+
+
+var current = 0;
+
+
+WebMidi.enable(function (err) {
+
+
+if (err) {
+  console.log("WebMidi could not be enabled.", err);
+} else {
+  console.log("WebMidi enabled!");
+}
+
+initializeGame();
+
+var output = WebMidi.outputs[0];
+//console.log(output);
+
+var input = WebMidi.getInputByName(output.name);
+
+
+input.addListener('noteon', "all", function(e) {
+    checkNote(e);
+    
+});
+
+
+});
+
+function checkNote(e) {
+  if (e.note.name==notes[current]){
+    paragraph.innerText = "Perfect! You played: " + e.note.name;
+    console.log("Perfect! You played: " + e.note.name);
+    initializeGame();
+  }
+  else
+  {
+    paragraph.innerText = "Wrong! You played: " + e.note.name;
+    console.log("Wrong! You played: " + e.note.name);
+  }
+
+  //console.log("You played: " + e.note.name);
+
+}
+
+function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function initializeGame () {
+  current = randomIntFromInterval(0, notes.length-1);
+  header.innerText = "Play this note: " + notes[current];
+  console.log("Play this note: " + notes[current]);
+}
+
+
+</script>
+
+
